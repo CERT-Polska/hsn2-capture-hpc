@@ -1,0 +1,8 @@
+Package: hsn2-capture-hpc
+Version: {VER}
+Section: unknown
+Priority: optional
+Architecture: all
+Maintainer: Juliusz Brzostek (juliusz.brzostek@cert.pl)
+Description: HSN2 Capture HPC Component.
+Distribution: {DEBIAN_DIST}
