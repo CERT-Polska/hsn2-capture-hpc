@@ -19,17 +19,17 @@ HSN2_COMPONENT_HOME="/opt/hsn2/$HSN2_COMPONENT"
 PIDFILE="/var/run/hsn2-$HSN2_COMPONENT.pid"
 
 CAPTURE_HOST=localhost
-CAPTURE_PORT=32337
-CAPTURE_CHANGES_DIR=/var/log/hsn2/tmp/changes
-CAPTURE_URL_LOG=/var/log/hsn2/tmp/output.log
+CAPTURE_PORT=31337
+CAPTURE_CHANGES_DIR=/tmp/hpc/changes
+CAPTURE_URL_LOG=/tmp/hpc/url.log
 
 HSN2_COMPONENT_PARAMS="-connector 127.0.0.1 \
 -dataStore http://localhost:8080 \
 -hpcHost ${CAPTURE_HOST} \
 -hpcPort ${CAPTURE_PORT} \
 -changesDir ${CAPTURE_CHANGES_DIR} \
--urlLogfile ${CAPTURE_URL_LOG} \
--maxT 60"
+-urlLogfile ${CAPTURE_URL_LOG}"
+
 
 HSN2_JVM_PARAMS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=1102"
 
