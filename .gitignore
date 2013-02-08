@@ -1,0 +1,8 @@
+/.classpath
+/.project
+/.settings/*
+/target/
+/changes/
+/test-output/*
+hpcIdGen.seq
+output.log
