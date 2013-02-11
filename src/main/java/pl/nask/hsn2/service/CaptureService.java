@@ -70,6 +70,34 @@ public final class CaptureService implements Daemon{
     	cs.stop();
     	cs.destroy();
 
+<<<<<<< HEAD
+=======
+        analyserThread = new Thread(logAnalyser, "hpcLogAnalyser");
+        analyserThread.start();
+        
+        // A connector for the Capture HPC server
+		CaptureHpcConnector hpcConnector = new CaptureHpcConnectorImpl(cmd.getHpcHost(), cmd.getHpcPort());
+
+		// a task factory for a generic service
+		TaskFactory jobFactory = new CaptureTaskFactory(hpcConnector, taskRegistry, cmd.getChangesDirName());
+
+		try {
+			// and a generic service
+			GenericService service = new GenericService(jobFactory, cmd.getMaxThreads(), cmd.getRbtCommonExchangeName(), cmd.getRbtNotifyExchangeName());
+			cmd.applyArguments(service);
+			LOGGER.info(hpcConnector.getConnectorInfo());
+
+			service.run();
+		} catch (RuntimeException e) {
+			analyserThread.interrupt();
+			joinSafely(analyserThread);
+			LOGGER.error("Caught RuntimeException, shutting down service", e);
+			System.exit(1);
+		} catch (InterruptedException e) {
+			analyserThread.interrupt();
+			joinSafely(analyserThread);
+		}
+>>>>>>> issue-2
     }
 
     private static void joinSafely(Thread thread) {

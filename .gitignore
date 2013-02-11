@@ -1,8 +1,9 @@
-/.classpath
-/.project
-/.settings/*
-/target/
 /changes/
-/test-output/*
+*.project
+*.classpath
+*.settings/
+*bin/
+*target/
 hpcIdGen.seq
 output.log
+test-output/
