@@ -64,7 +64,7 @@ public class CaptureService {
 
 		try {
 			// and a generic service
-			GenericService service = new GenericService(jobFactory, cmd.getMaxThreads(), cmd.getRbtCommonExchangeName());
+			GenericService service = new GenericService(jobFactory, cmd.getMaxThreads(), cmd.getRbtCommonExchangeName(), cmd.getRbtNotifyExchangeName());
 			cmd.applyArguments(service);
 			LOGGER.info(hpcConnector.getConnectorInfo());
 

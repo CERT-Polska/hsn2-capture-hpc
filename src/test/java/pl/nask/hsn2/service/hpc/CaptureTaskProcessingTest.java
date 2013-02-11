@@ -34,13 +34,13 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
 
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import pl.nask.hsn2.FinishedJobsListener;
 import pl.nask.hsn2.ParameterException;
 import pl.nask.hsn2.RequiredParameterMissingException;
 import pl.nask.hsn2.ResourceException;
@@ -75,12 +75,12 @@ public class CaptureTaskProcessingTest {
 	private static final AtomicInteger taskRequestCalls = new AtomicInteger(0);
 	private static final AtomicInteger taskCompletedCalls = new AtomicInteger(0);
 
-	@Mocked ParametersWrapper paramWrapper;
-	
+	@Mocked
+	ParametersWrapper paramWrapper;
+	@Mocked
+	private FinishedJobsListener finishedJobsListener;
+
 	public static class ServiceConnectorMock extends MockUp<ServiceConnector> {
-		
-		
-		
 		@Mock
 		public TaskRequest getTaskRequest() throws BusException, InterruptedException{
 			int taskId = -1;
@@ -185,20 +185,15 @@ public class CaptureTaskProcessingTest {
 				throws ResourceException, StorageException {
 			return null;
 		}
-		
 	}
-	
-	
-	
 	
 	@Test(enabled=false,timeOut=1500000)
 	public void multiThreadedTasksProcessing() throws InterruptedException, IOException {
-		
 		prepareHpcProfileMock("winxp");
 
 		List<Callable<Void>> l = new ArrayList<Callable<Void>>(SERVICE_THREAD_COUNT);
 		for(int i=0; i < SERVICE_THREAD_COUNT;i++) {
-			TaskProcessor t = new TaskProcessor(taskFactory,new ServiceConnectorMock().getMockInstance());
+			TaskProcessor t = new TaskProcessor(taskFactory,new ServiceConnectorMock().getMockInstance(), new FinishedJobsListener());
 			l.add(t);
 		}
 		
@@ -211,10 +206,7 @@ public class CaptureTaskProcessingTest {
 		Assert.assertTrue(taskCompletedCalls.get() == taskAcceptedCalls.get());
 		Assert.assertTrue(URL_LIMIT == taskCompletedCalls.get());
 		Assert.assertTrue(URL_LIMIT == taskRequestCalls.get());
-		
-	 
-  }
-	
+	}
 	
 	private void prepareHpcProfileMock(final String hpc_profile) {
 		try {
@@ -228,8 +220,6 @@ public class CaptureTaskProcessingTest {
 		}
 	}
 	
-	
-	
 	@Test(enabled = true)
 	public void multiSpaceUrlTest() {
 		prepareHpcProfileMock("winxp");
@@ -239,7 +229,7 @@ public class CaptureTaskProcessingTest {
 		List<Callable<Void>> l = new ArrayList<Callable<Void>>(SERVICE_THREAD_COUNT);
 		for(int i=0; i < SERVICE_THREAD_COUNT;i++) {
 			ServiceConnectorMock scm = getModifiedServiceConnectorMock(noTasks);
-			TaskProcessor t = new TaskProcessor(taskFactory,scm.getMockInstance());
+			TaskProcessor t = new TaskProcessor(taskFactory,scm.getMockInstance(), new FinishedJobsListener());
 			l.add(t);
 		}
 		
@@ -315,17 +305,24 @@ public class CaptureTaskProcessingTest {
   
   
   @BeforeMethod
-  public void beforeTest() {
-	  if ( genericServiceRunner == null) {
+	public void beforeTest() {
+		if (genericServiceRunner == null) {
 			genericServiceRunner = Executors.newFixedThreadPool(SERVICE_THREAD_COUNT);
 		} else {
 			genericServiceRunner.shutdownNow();
 			genericServiceRunner = Executors.newFixedThreadPool(SERVICE_THREAD_COUNT);
 		}
-	  taskAcceptedCalls.set(0);
-	  taskRequestCalls.set(0);
-	  taskCompletedCalls.set(0);
-  }
+		taskAcceptedCalls.set(0);
+		taskRequestCalls.set(0);
+		taskCompletedCalls.set(0);
+
+		new NonStrictExpectations() {
+			{
+				finishedJobsListener.isJobFinished(anyLong);
+				result = false;
+			}
+		};
+	}
   
   @AfterClass
   public void afterClass() throws InterruptedException {
