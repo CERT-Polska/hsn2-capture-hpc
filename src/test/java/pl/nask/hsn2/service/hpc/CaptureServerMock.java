@@ -52,22 +52,12 @@ public class CaptureServerMock  implements Runnable{
     private ExecutorService ex = Executors.newFixedThreadPool(NUMBER_OF_EXECUTORS);
 	private final String WORKING_DIR;
 	
-	
     private final static Logger LOGGER = LoggerFactory.getLogger(CaptureServerMock.class);
 	private static int DEFAULT_PORT = 32337;
 	private boolean GEN_FILES = false;
    
     static class Flows { 
-    	
-    	
     	private static final String[] SIMPLE_FLOW = {"T QUEUED","T SENDING","T VISITING","T VISITED","F BENIGN"};
-    	private static final String[] MALICIOUS__LONG_FLOW = {"T QUEUED","T SENDING","T VISITING","T MALICIOUS","T VM_STALLED-0","T SENDING","T VISITING","F MALICIOUS"};
-    	private static final String[] MALICIOUS_FLOW = {"T QUEUED","T SENDING","T VISITING","F MALICIOUS"};
-    	private static final String[] NET_ERROR_FLOW = {"T QUEUED","T SENDING","T VISITING","F NETWORK_ERROR-2148270085","F NETWORK_ERROR-2148270085"};
-    	private static final String[] NET_404_FLOW = {"T QUEUED","T SENDING","T VISITING", "F NETWORK_ERROR-404","F NETWORK_ERROR-404"};
-    	private static final String[] SOCKET_ERROR_FLOW = {"T QUEUED","T SENDING","T PROCESS_ERROR-0","T SENDING","T VISITING","F SOCKET_ERROR-0"};
-    	private static final String[] CONNECTION_RESET_FLOW = {"T QUEUED","T SENDING","T VISITING","T VM_STALLED-0","T SENDING","T VISITING","F CAPTURE_CLIENT_CONNECTION_RESET-0"};
-    	private static final String[] INVALID_URL_FLOW = {"T QUEUED","T SENDING","F INVALID_URL"};
 		
     	static String[] getFlow(int i) {
     		if(i<0)
@@ -85,6 +75,7 @@ public class CaptureServerMock  implements Runnable{
 			}
     		return SIMPLE_FLOW;
     	}
+
     	static String[] getFlow(String flowName) {
     		
 			try {
@@ -101,11 +92,7 @@ public class CaptureServerMock  implements Runnable{
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
-			
 			return SIMPLE_FLOW;
-			
-			
-    		
     	}
     }
 
@@ -129,7 +116,6 @@ public class CaptureServerMock  implements Runnable{
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-    	
     }
     
     private void deleteChangesDir() {
@@ -138,11 +124,9 @@ public class CaptureServerMock  implements Runnable{
 			for(File f :d.listFiles())
 				f.delete();
 		}
-		
 	}
 
 	public static void main(String[] args) {
-    	
     	CaptureServerMock cm;
     	if ( args.length == 0) {
     		cm = new CaptureServerMock(DEFAULT_PORT, "output.log", false);
@@ -152,7 +136,6 @@ public class CaptureServerMock  implements Runnable{
     	cm.generateHPCfiles(true);
     	cm.startServer();
     }
-
 
 	public void startServer() {
 		try {
@@ -180,6 +163,7 @@ public class CaptureServerMock  implements Runnable{
 			stopServer();
 		}
 	}
+
     private void stopServer() {
     	ex.shutdown();
     	try {
@@ -188,9 +172,8 @@ public class CaptureServerMock  implements Runnable{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    	
-    	
     }
+
     public CaptureServerMock generateHPCfiles(boolean enabled ) {
     	GEN_FILES = enabled;
     	return this;
@@ -206,10 +189,7 @@ public class CaptureServerMock  implements Runnable{
     	return this;
     }
 
-
-    
     public class CaptureSocketHandler implements Runnable {
-
 		private Socket inSocket;
 		private long delay;
 
@@ -217,7 +197,6 @@ public class CaptureServerMock  implements Runnable{
 			this.inSocket = s;
 			this.delay = captureDelay;
 		}
-
 
 		@Override
 		public void run() {
@@ -229,7 +208,6 @@ public class CaptureServerMock  implements Runnable{
 						LOGGER.info("Received command: {}",cmd);
 						processCommand(cmd);
 					}
-					
 				} catch (IOException e) {
 					LOGGER.error("Exception while reading from the InputStream", e);
 				} finally {
@@ -240,7 +218,6 @@ public class CaptureServerMock  implements Runnable{
 						e.printStackTrace();
 					}
 				}
-
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -253,9 +230,7 @@ public class CaptureServerMock  implements Runnable{
 					e.printStackTrace();
 				}
 			}
-
 		}
-		
 
 		private void processCommand(String cmd) throws IOException {
 			if (cmd != null) {
@@ -325,9 +300,7 @@ public class CaptureServerMock  implements Runnable{
 		    			writer.format("%1$tF %1$tT.%1$tL %2$s %3$s %4$s %5$s %6$s\n",new Date(),"127.0.0.1","T","VISITING",var.toString(),url);		    		
 		    			writer.format("%1$tF %1$tT.%1$tL %2$s %3$s %4$s %5$s %6$s\n",new Date(),"127.0.0.1","T","VISITED",var.toString(),url);		    		
 		    			writer.format("%1$tF %1$tT.%1$tL %2$s %3$s %4$s %5$s %6$s\n",new Date(),"127.0.0.1","F","BENIGN",var.toString(),url);
-
-		    		}	
-
+		    		}
 		    	} else if ("quit".equalsIgnoreCase(cmdArray[0]) || "exit".equalsIgnoreCase(cmdArray[0])) {
 		    		stopServer();
 		    	} else if ("raw".equalsIgnoreCase(cmdArray[0]) || "raw_write".equalsIgnoreCase(cmdArray[0])) {
@@ -349,7 +322,6 @@ public class CaptureServerMock  implements Runnable{
 		    private void processAddUrl(String url, String id, String[] jobFlow) throws IOException {
 		    	LOGGER.debug("Writing to output.log: URL: {}, id: {}" ,new Object[] {url,id,});
 		    	try {
-		    		long test = Long.parseLong(id);
 		    	} catch (NumberFormatException e) {
 		    		LOGGER.warn("ID value must be a number [{}] ",id);
 		    	}
@@ -361,7 +333,6 @@ public class CaptureServerMock  implements Runnable{
 		    			if (GEN_FILES && "F MALICIOUS".equalsIgnoreCase(jobFlow[i])) {
 		    				createFiles(id,"log",1);
 		    				createFiles(id,"zip",1);
-		    				
 		    			}
 		    			if ( jobFlow[i].equals("F INVALID_URL")) {
 		    			writer.format("%1$tF %1$tT.%1$tL %2$s %3$s %4$s %5$s\n", new Date(), "IP_NA", jobFlow[i], id, url);
@@ -392,15 +363,14 @@ public class CaptureServerMock  implements Runnable{
 		            		out.closeEntry();
 		            		out.close();
 		            	} else {
-		            		PrintWriter pw = new PrintWriter(newFile);
-		            		pw.append("HPC task id: "+id);
-		            		pw.flush();
+							try (PrintWriter pw = new PrintWriter(newFile)) {
+								pw.append("HPC task id: "+id);
+								pw.flush();
+							}
 		            	}
 		            }
 		        }
-
 		    }
-		   
     }
 
 	@Override
@@ -408,8 +378,4 @@ public class CaptureServerMock  implements Runnable{
 		startServer();
 		
 	}
-
-
-
-	
 }
