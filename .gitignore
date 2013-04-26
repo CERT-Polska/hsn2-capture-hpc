@@ -7,3 +7,4 @@
 hpcIdGen.seq
 output.log
 test-output/
+coverage-report/

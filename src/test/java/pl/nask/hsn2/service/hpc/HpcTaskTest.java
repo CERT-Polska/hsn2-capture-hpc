@@ -33,17 +33,14 @@ import pl.nask.hsn2.StorageException;
 import pl.nask.hsn2.TaskContext;
 import pl.nask.hsn2.bus.operations.AttributeType;
 import pl.nask.hsn2.bus.operations.ObjectData;
-import pl.nask.hsn2.protobuff.DataStore.DataResponse;
-import pl.nask.hsn2.protobuff.DataStore.DataResponse.ResponseType;
-import pl.nask.hsn2.protobuff.Object.Reference;
+import pl.nask.hsn2.connector.REST.DataResponse;
 import pl.nask.hsn2.service.CaptureTask;
 import pl.nask.hsn2.wrappers.ObjectDataWrapper;
 
-
+@SuppressWarnings("unused")
 public class HpcTaskTest extends HpcAbstractTest {
-
     private static int testId;
-	DataResponse dataResponse = DataResponse.newBuilder().setType(ResponseType.OK).setRef(Reference.newBuilder().setKey(1)).build();
+	DataResponse dataResponse = new DataResponse(1L);
 
     @Test(enabled=true)
     public void testNormalUrl() throws InterruptedException, IOException, ParameterException, ResourceException, StorageException {
@@ -52,7 +49,7 @@ public class HpcTaskTest extends HpcAbstractTest {
         new NonStrictExpectations() {{
            serviceConnector.updateObject(anyLong, null);times=1;
            forEachInvocation = new Object() {
-               void validate(long jobId, ObjectData object) {
+			void validate(long jobId, ObjectData object) {
                    Assert.assertEquals(jobId, objectId);
                    Assert.assertEquals(object.getId(), objectId);
                    assertActive(object, "benign");
@@ -70,21 +67,24 @@ public class HpcTaskTest extends HpcAbstractTest {
         final long objectId = 2;
         HpcTaskTest.setTestId(objectId);
         
-        new NonStrictExpectations() {
-            {
-           serviceConnector.sendDataStoreData(anyLong, withInstanceOf(InputStream.class));result=dataResponse;times=1;
+		new NonStrictExpectations() {
+			{
+				serviceConnector.sendDataStoreData(anyLong, withInstanceOf(InputStream.class));
+				result = dataResponse;
+				times = 1;
 
-           serviceConnector.updateObject(anyLong, withInstanceOf(ObjectData.class));times=1;
-           forEachInvocation = new Object() {
-               void validate(long jobId, ObjectData object) {
-                   Assert.assertEquals(jobId, objectId);
-                   Assert.assertEquals(object.getId(), objectId);
-                   assertActive(object, "benign");
-                   Assert.assertNotNull(object.findAttribute("hpc_zip_file", AttributeType.BYTES));
-                   Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
-               }
-           };
-        }};
+				serviceConnector.updateObject(anyLong, withInstanceOf(ObjectData.class));
+				times = 1;
+				forEachInvocation = new Object() {
+					void validate(long jobId, ObjectData object) {
+						Assert.assertEquals(jobId, objectId);
+						Assert.assertEquals(object.getId(), objectId);
+						assertActive(object, "benign");
+						Assert.assertNotNull(object.findAttribute("hpc_zip_file", AttributeType.BYTES));
+						Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
+					}
+				};
+			}};
 
         runHpcTask(objectId);
     }
@@ -94,23 +94,24 @@ public class HpcTaskTest extends HpcAbstractTest {
         final long objectId = 3;
         HpcTaskTest.setTestId(objectId);
         
-        new NonStrictExpectations() {
-            {
-           serviceConnector.updateObject(anyLong, withInstanceOf(ObjectData.class));times=1;
-           forEachInvocation = new Object() {
-               void validate(long jobId, ObjectData object) {
-                   Assert.assertEquals(jobId, objectId);
-                   Assert.assertEquals(object.getId(), objectId);
-                   assertNotActive(object, "NETWORK_ERROR-123123");
-                   Assert.assertNull(object.findAttribute("hpc_log_file", AttributeType.BYTES));
-                   Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
-                   Assert.assertNull(object.findAttribute("hpc_zip_file", AttributeType.BYTES));
-                   Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
-               }
-           };
-        }};
+		new NonStrictExpectations() {
+			{
+				serviceConnector.updateObject(anyLong, withInstanceOf(ObjectData.class));
+				times = 1;
+				forEachInvocation = new Object() {
+					void validate(long jobId, ObjectData object) {
+						Assert.assertEquals(jobId, objectId);
+						Assert.assertEquals(object.getId(), objectId);
+						assertNotActive(object, "NETWORK_ERROR-123123");
+						Assert.assertNull(object.findAttribute("hpc_log_file", AttributeType.BYTES));
+						Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
+						Assert.assertNull(object.findAttribute("hpc_zip_file", AttributeType.BYTES));
+						Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
+					}
+				};
+			}};
 
-        runHpcTask(objectId);
+			runHpcTask(objectId);
     }
 
     @Test(enabled=true)
@@ -118,21 +119,22 @@ public class HpcTaskTest extends HpcAbstractTest {
         final long objectId = 4;
         HpcTaskTest.setTestId(objectId);
         
-        new NonStrictExpectations() {
-            {
-           serviceConnector.updateObject(anyLong, withInstanceOf(ObjectData.class));times=1;
-           forEachInvocation = new Object() {
-               void validate(long jobId, ObjectData object) {
-                   Assert.assertEquals(jobId, objectId);
-                   Assert.assertEquals(object.getId(), objectId);
-                   assertNotActive(object, "VM_STALLED-0");
-                   Assert.assertNull(object.findAttribute("hpc_log_file", AttributeType.BYTES));
-                   Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
-                   Assert.assertNull(object.findAttribute("hpc_zip_file", AttributeType.BYTES));
-                   Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
-               }
-           };
-        }};
+		new NonStrictExpectations() {
+			{
+				serviceConnector.updateObject(anyLong, withInstanceOf(ObjectData.class));
+				times = 1;
+				forEachInvocation = new Object() {
+					void validate(long jobId, ObjectData object) {
+						Assert.assertEquals(jobId, objectId);
+						Assert.assertEquals(object.getId(), objectId);
+						assertNotActive(object, "VM_STALLED-0");
+						Assert.assertNull(object.findAttribute("hpc_log_file", AttributeType.BYTES));
+						Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
+						Assert.assertNull(object.findAttribute("hpc_zip_file", AttributeType.BYTES));
+						Assert.assertNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
+					}
+				};
+			}};
 
         runHpcTask(objectId);
     }
@@ -170,23 +172,26 @@ public class HpcTaskTest extends HpcAbstractTest {
         final long objectId = 6;
         HpcTaskTest.setTestId(objectId);
         
-        new NonStrictExpectations() {
-            {
-           serviceConnector.sendDataStoreData(anyLong, withInstanceOf(InputStream.class));result=dataResponse;times=4;
+		new NonStrictExpectations() {
+			{
+				serviceConnector.sendDataStoreData(anyLong, withInstanceOf(InputStream.class));
+				result = dataResponse;
+				times = 4;
 
-           serviceConnector.updateObject(anyLong, withInstanceOf(ObjectData.class));times=1;
-           forEachInvocation = new Object() {
-               void validate(long jobId, ObjectData object) {
-                   Assert.assertEquals(jobId, objectId);
-                   Assert.assertEquals(object.getId(), objectId);
-                   assertActive(object, "malicious");
-                   Assert.assertNotNull(object.findAttribute("hpc_log_file", AttributeType.BYTES));
-                   Assert.assertNotNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
-                   Assert.assertNotNull(object.findAttribute("hpc_zip_file", AttributeType.BYTES));
-                   Assert.assertNotNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
-               }
-           };
-        }};
+				serviceConnector.updateObject(anyLong, withInstanceOf(ObjectData.class));
+				times = 1;
+				forEachInvocation = new Object() {
+					void validate(long jobId, ObjectData object) {
+						Assert.assertEquals(jobId, objectId);
+						Assert.assertEquals(object.getId(), objectId);
+						assertActive(object, "malicious");
+						Assert.assertNotNull(object.findAttribute("hpc_log_file", AttributeType.BYTES));
+						Assert.assertNotNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
+						Assert.assertNotNull(object.findAttribute("hpc_zip_file", AttributeType.BYTES));
+						Assert.assertNotNull(object.findAttribute("hpc_zip_file2", AttributeType.BYTES));
+					}
+				};
+			}};
 
         runHpcTask(objectId);
     }

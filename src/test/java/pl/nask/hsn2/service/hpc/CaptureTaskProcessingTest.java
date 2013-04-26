@@ -48,7 +48,7 @@ import pl.nask.hsn2.ServiceConnector;
 import pl.nask.hsn2.StorageException;
 import pl.nask.hsn2.TaskProcessor;
 import pl.nask.hsn2.connector.BusException;
-import pl.nask.hsn2.protobuff.DataStore.DataResponse;
+import pl.nask.hsn2.connector.REST.DataResponse;
 import pl.nask.hsn2.protobuff.Object.Attribute;
 import pl.nask.hsn2.protobuff.Object.Attribute.Builder;
 import pl.nask.hsn2.protobuff.Object.Attribute.Type;
@@ -173,11 +173,6 @@ public class CaptureTaskProcessingTest {
 		@Mock
 		public DataResponse sendDataStoreData(long jobId, InputStream is)
 				throws ResourceException, IOException {
-			return null;
-		}
-		@Mock
-		public DataResponse getDataStoreData(long jobId, long dataId)
-				throws IOException {
 			return null;
 		}
 		@Mock
