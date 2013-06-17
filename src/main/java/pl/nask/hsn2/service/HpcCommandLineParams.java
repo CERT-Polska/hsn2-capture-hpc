@@ -61,6 +61,7 @@ public class HpcCommandLineParams extends CommandLineParams {
     protected void initDefaults() {
     	super.initDefaults();
     	setDefaultValue(HPC_SEQ_GENERATOR.getName(), HPC_IDGEN_DEFAULT_FILENAME);
+    	setDefaultServiceNameAndQueueName("capture");
     }
 
 }

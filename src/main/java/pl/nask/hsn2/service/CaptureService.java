@@ -19,79 +19,41 @@
 
 package pl.nask.hsn2.service;
 
-import java.lang.Thread.UncaughtExceptionHandler;
-
-import org.apache.commons.daemon.Daemon;
-import org.apache.commons.daemon.DaemonContext;
-import org.apache.commons.daemon.DaemonController;
 import org.apache.commons.daemon.DaemonInitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.nask.hsn2.GenericService;
+import pl.nask.hsn2.CommandLineParams;
+import pl.nask.hsn2.ServiceMain;
 import pl.nask.hsn2.service.hpc.CaptureHpcConnector;
 import pl.nask.hsn2.service.hpc.CaptureHpcConnectorImpl;
 import pl.nask.hsn2.service.hpc.HpcLogAnalyserImpl;
 import pl.nask.hsn2.service.hpc.TaskRegistry;
 import pl.nask.hsn2.task.TaskFactory;
 
-public final class CaptureService implements Daemon{
+public final class CaptureService extends ServiceMain {
     private static final Logger LOGGER = LoggerFactory.getLogger(CaptureService.class);
-
     private static Thread analyserThread;
 
-	private static  HpcCommandLineParams cmd;
-	
 	// Keeps track of registered hpc tasks
 	private static volatile TaskRegistry taskRegistry;
 
-	
-	private Thread serviceRunner ;
-
     public static void main(final String[] args) throws DaemonInitException, Exception {
-
     	CaptureService cs = new CaptureService();
-    	cs.init(new DaemonContext() {
-			
-			@Override
-			public DaemonController getController() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public String[] getArguments() {
-				return args;
-			}
-		});
+    	cs.init(new DefaultDaemonContext(args));
     	cs.start();
-    	while(!Thread.currentThread().isInterrupted())
-    		Thread.sleep(5000);
-    	cs.stop();
-    	cs.destroy();
     }
 
-    private static void joinSafely(Thread thread) {
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            LOGGER.warn("Interrupted while joining thread {}", thread);
-        }
-    }
+	@Override
+	public void stop() {
+		analyserThread.interrupt();
+		super.stop();
+	}
 
-    private static HpcCommandLineParams parseArguments(String[] args) {
-        HpcCommandLineParams params = new HpcCommandLineParams();
-        params.setDefaultServiceNameAndQueueName("capture");
-        params.parseParams(args);
-
-        return params;
-    }
-
-    @Override
-    public void init(DaemonContext context) throws DaemonInitException, Exception {
-    	cmd = parseArguments(context.getArguments());
+	@Override
+	protected void prepareService() {
+		HpcCommandLineParams cmd = (HpcCommandLineParams)getCommandLineParams();
     	taskRegistry = new TaskRegistry(cmd.getHpcFileIdGen());
-
 
     	// checks the log file for the results of analysis and triggers taskRegistry
     	HpcLogAnalyserImpl logAnalyser = null;
@@ -99,69 +61,23 @@ public final class CaptureService implements Daemon{
     		logAnalyser = new HpcLogAnalyserImpl(cmd.getLogFileName(), taskRegistry);
     	} catch (IllegalArgumentException e) {
     		LOGGER.error("Cannot open HPC server log file: {}\t - Shutting down",e.getMessage());
-    		throw new DaemonInitException("Cannot open HPC server log file");
+    		throw new RuntimeException("Cannot open HPC server log file", e);
     	}
     	analyserThread = new Thread(logAnalyser, "hpcLogAnalyser");
-    	
-    	serviceRunner = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-					
-					@Override
-					public void uncaughtException(Thread t, Throwable e) {
-						LOGGER.error("Service crash.exiting");
-						System.exit(1);
-					}
-				});
-				try {
-					// A connector for the Capture HPC server
-					CaptureHpcConnector hpcConnector = new CaptureHpcConnectorImpl(cmd.getHpcHost(), cmd.getHpcPort());
-			    	LOGGER.info(hpcConnector.getConnectorInfo());
-
-			    	// a task factory for a generic service
-			    	TaskFactory jobFactory = new CaptureTaskFactory(hpcConnector, taskRegistry, cmd.getChangesDirName());
-
-					GenericService service = new GenericService(jobFactory, cmd.getMaxThreads(), cmd.getRbtCommonExchangeName(), cmd.getRbtNotifyExchangeName());
-					cmd.applyArguments(service);
-					
-					service.run();
-				} catch (RuntimeException e) {
-					analyserThread.interrupt();
-					joinSafely(analyserThread);
-					LOGGER.error("Caught RuntimeException, shutting down service", e);
-					System.exit(1);
-				} catch (InterruptedException e) {
-					analyserThread.interrupt();
-					joinSafely(analyserThread);
-					System.exit(1);
-				}
-				
-			}
-		},"Capture-Service");
-
-    }
-
-	@Override
-	public void start() throws Exception {
-		analyserThread.start();
-		serviceRunner.start();
-		
+    	analyserThread.start();
 	}
 
 	@Override
-	public void stop() throws Exception {
-		analyserThread.interrupt();
-		serviceRunner.interrupt();
-		joinSafely(analyserThread);
-		joinSafely(serviceRunner);
-		
+	protected TaskFactory createTaskFactory() {
+		// A connector for the Capture HPC server
+		HpcCommandLineParams cmd = (HpcCommandLineParams)getCommandLineParams();
+		CaptureHpcConnector hpcConnector = new CaptureHpcConnectorImpl(cmd.getHpcHost(), cmd.getHpcPort());
+    	LOGGER.info(hpcConnector.getConnectorInfo());
+		return new CaptureTaskFactory(hpcConnector, taskRegistry, cmd.getChangesDirName());
 	}
-
+	
 	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-		
+	protected CommandLineParams newCommandLineParams() {
+		return new HpcCommandLineParams();
 	}
 }
