@@ -86,7 +86,8 @@ public abstract class HpcAbstractTest {
 
 
 	private void createFactory() {
-        factory = new CaptureTaskFactory(hpcConnector, taskRegistry, "changes");
+		CaptureTaskFactory.prepereForAllThreads(hpcConnector, taskRegistry, "changes");
+        factory = new CaptureTaskFactory();
     }
 
 

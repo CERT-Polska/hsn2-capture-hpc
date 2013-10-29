@@ -293,7 +293,8 @@ public class CaptureTaskProcessingTest {
 
 	  captureConnector = new CaptureHpcConnectorImpl("localhost", 32337);
 	  
-	  taskFactory = new CaptureTaskFactory(captureConnector, taskRegistry, "changes");
+	  CaptureTaskFactory.prepereForAllThreads(captureConnector, taskRegistry, "changes");
+      taskFactory = new CaptureTaskFactory();
   }
   
   

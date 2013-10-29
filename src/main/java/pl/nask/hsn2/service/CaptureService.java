@@ -68,12 +68,13 @@ public final class CaptureService extends ServiceMain {
 	}
 
 	@Override
-	protected TaskFactory createTaskFactory() {
+	protected Class<? extends TaskFactory> initializeTaskFactory() {
 		// A connector for the Capture HPC server
 		HpcCommandLineParams cmd = (HpcCommandLineParams)getCommandLineParams();
 		CaptureHpcConnector hpcConnector = new CaptureHpcConnectorImpl(cmd.getHpcHost(), cmd.getHpcPort());
     	LOGGER.info(hpcConnector.getConnectorInfo());
-		return new CaptureTaskFactory(hpcConnector, taskRegistry, cmd.getChangesDirName());
+    	CaptureTaskFactory.prepereForAllThreads(hpcConnector, taskRegistry, cmd.getChangesDirName());
+		return CaptureTaskFactory.class;
 	}
 	
 	@Override

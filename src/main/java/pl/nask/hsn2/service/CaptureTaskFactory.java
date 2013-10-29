@@ -30,14 +30,14 @@ import pl.nask.hsn2.wrappers.ParametersWrapper;
 
 public class CaptureTaskFactory implements TaskFactory {
 
-    private final CaptureHpcConnector captureHpcConnector;
-    private final TaskRegistry taskRegistry;
-    private final String changesDir;
+    private static CaptureHpcConnector captureHpcConnector;
+    private static TaskRegistry taskRegistry;
+    private static String changesDir;
 
-    public CaptureTaskFactory(CaptureHpcConnector hpcConnector, TaskRegistry taskRegistry, String changesDir) {
-        captureHpcConnector = hpcConnector;
-        this.taskRegistry = taskRegistry;
-        this.changesDir = changesDir;
+    public static void prepereForAllThreads(CaptureHpcConnector captureHpcConnector, TaskRegistry taskRegistry, String changesDir){
+    	CaptureTaskFactory.captureHpcConnector = captureHpcConnector;
+        CaptureTaskFactory.taskRegistry = taskRegistry;
+        CaptureTaskFactory.changesDir = changesDir;
     }
 
     @Override
