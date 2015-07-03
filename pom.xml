@@ -114,4 +114,7 @@
 		</profile>
 
 	</profiles>
+	<description>HSN2 Capture HPC connector service provides functionality of a high-interaction client honeypot.
+It allows visitation of an URL and classification of web page contents based on behavior of browser 
+in the monitored operating system.</description>
 </project>
