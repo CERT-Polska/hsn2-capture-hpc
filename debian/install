@@ -1,1 +1,2 @@
 build/capture-hpc /usr/share/hsn2/
+capture-hpc.conf /etc/hsn2/

@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+# Source debconf library.
+. /usr/share/debconf/confmodule
+
+db_input high hsn2-capture-hpc/capture_host || true
+db_go
+db_input high hsn2-capture-hpc/capture_port || true
+db_go
+db_input high hsn2-capture-hpc/changes_dir || true
+db_go
+db_input high hsn2-capture-hpc/url_log || true
+db_go

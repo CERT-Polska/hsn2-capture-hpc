@@ -1,0 +1,23 @@
+Template: hsn2-capture-hpc/capture_host
+Type: string
+Default: localhost
+Description: CaptureHPC hostname or ip
+ Part of HSN2 Capture HPC service configuration.
+
+Template: hsn2-capture-hpc/capture_port
+Type: string
+Default: 31337
+Description: CaptureHPC port
+ Part of HSN2 Capture HPC service configuration.
+
+Template: hsn2-capture-hpc/changes_dir
+Type: string
+Default: /tmp/hpc/changes
+Description: CaptureHPC changes directory
+ Part of HSN2 Capture HPC service configuration.
+
+Template: hsn2-capture-hpc/url_log
+Type: string
+Default: /tmp/hpc/url.log
+Description: CaptureHPC url log file
+ Part of HSN2 Capture HPC service configuration.
