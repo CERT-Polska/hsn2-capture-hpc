@@ -15,7 +15,7 @@ HSN2_COMPONENT="capture-hpc"
 MAINCLASS="pl.nask.hsn2.service.CaptureService"
 CONFFILE=/etc/hsn2/capture-hpc.conf
 
-HSN2_JMX_PORT=1102
+#HSN2_JMX_PORT=1102
 
 . /lib/hsn2/init-functions-java
 
