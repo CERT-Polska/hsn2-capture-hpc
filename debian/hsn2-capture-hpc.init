@@ -12,6 +12,7 @@
 
 NAME="HSN2 Capture HPC Service"
 HSN2_COMPONENT="capture-hpc"
+HSN2_COMPONENT_HOME=/usr/share/hsn2/capture-hpc
 MAINCLASS="pl.nask.hsn2.service.CaptureService"
 CONFFILE=/etc/hsn2/capture-hpc.conf
 
