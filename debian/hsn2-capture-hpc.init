@@ -25,9 +25,10 @@ prepare_start() {
 		-hpcHost ${CAPTURE_HOST} \
 		-hpcPort ${CAPTURE_PORT} \
 		-changesDir ${CAPTURE_CHANGES_DIR} \
-		-urlLogfile ${CAPTURE_URL_LOG}"
+		-urlLogfile ${CAPTURE_URL_LOG} \
+		-logLevel ${LOG_LEVEL}"
 }
-	
+
 choose_java_service_action $@
 
 exit $?
