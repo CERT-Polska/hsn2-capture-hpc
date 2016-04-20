@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
+ *
  * This file is part of HoneySpider Network 2.0.
- * 
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -27,13 +27,13 @@ public interface CaptureHpcConnector {
      * Sends 'exit' command
      * @throws IOException
      */
-    public void exit() throws IOException;
+    void exit() throws IOException;
 
     /**
      * Sends 'reload' command
      * @throws IOException
      */
-    public void reload() throws IOException;
+    void reload() throws IOException;
 
     /**
      * Sends addurl command with 2 parameters: url and urlId.
@@ -41,7 +41,7 @@ public interface CaptureHpcConnector {
      * @param urlId
      * @throws IOException
      */
-    public void addUrl(String url, long urlId) throws IOException;
+    void addUrl(String url, long urlId) throws IOException;
 
-    public String getConnectorInfo();
+    String getConnectorInfo();
 }

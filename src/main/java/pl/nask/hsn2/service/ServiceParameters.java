@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
+ *
  * This file is part of HoneySpider Network 2.0.
- * 
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -31,30 +31,30 @@ public class ServiceParameters {
     private boolean saveScreenshot;
 
     public ServiceParameters(ParametersWrapper parameters) throws RequiredParameterMissingException {
-        this.hpcProfile = parameters.get("hpc_profile");
-        this.savePcap = parameters.getBoolean("save_pcap", false);
-        this.saveZip = parameters.getBoolean("save_zip", true);
-        this.saveLog = parameters.getBoolean("save_log", true);
-        this.saveScreenshot = parameters.getBoolean("save_screenshot", true);
+        hpcProfile = parameters.get("hpc_profile");
+        savePcap = parameters.getBoolean("save_pcap", false);
+        saveZip = parameters.getBoolean("save_zip", true);
+        saveLog = parameters.getBoolean("save_log", true);
+        saveScreenshot = parameters.getBoolean("save_screenshot", true);
     }
 
-    public String getHpcProfile() {
+    public final String getHpcProfile() {
         return hpcProfile;
     }
 
-    public boolean isSavePcap() {
+    public final boolean isSavePcap() {
         return savePcap;
     }
 
-    public boolean isSaveZip() {
+    public final boolean isSaveZip() {
         return saveZip;
     }
 
-    public boolean isSaveLog() {
+    public final boolean isSaveLog() {
         return saveLog;
     }
 
-    public boolean isSaveScreenshot() {
+    public final boolean isSaveScreenshot() {
         return saveScreenshot;
     }
 

@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
+ *
  * This file is part of HoneySpider Network 2.0.
- * 
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -23,13 +23,14 @@ import pl.nask.hsn2.CommandLineParams;
 
 public class HpcCommandLineParams extends CommandLineParams {
     public static final String HPC_IDGEN_DEFAULT_FILENAME = "hpcIdGen.seq";
-	private final static OptionNameWrapper HPC_HOST = new OptionNameWrapper("hh", "hpcHost");
-    private final static OptionNameWrapper HPC_PORT = new OptionNameWrapper("hp", "hpcPort");
-    private final static OptionNameWrapper OUTPUT_LOG_FILE = new OptionNameWrapper("log", "urlLogfile");
-    private final static OptionNameWrapper CHANGES_DIR = new OptionNameWrapper("dir", "changesDir");
-    private final static OptionNameWrapper HPC_SEQ_GENERATOR = new OptionNameWrapper("idgen", "captIdGen");
+	private static final OptionNameWrapper HPC_HOST = new OptionNameWrapper("hh", "hpcHost");
+    private static final OptionNameWrapper HPC_PORT = new OptionNameWrapper("hp", "hpcPort");
+    private static final OptionNameWrapper OUTPUT_LOG_FILE = new OptionNameWrapper("log", "urlLogfile");
+    private static final OptionNameWrapper CHANGES_DIR = new OptionNameWrapper("dir", "changesDir");
+    private static final OptionNameWrapper HPC_SEQ_GENERATOR = new OptionNameWrapper("idgen", "captIdGen");
+
     @Override
-    public void initOptions() {
+    public final void initOptions() {
         super.initOptions();
         addOption(HPC_HOST, "host", "Address of the host with Capture HPC");
         addOption(HPC_PORT, "port", "Port number on which Capture HPC is running");
@@ -38,27 +39,27 @@ public class HpcCommandLineParams extends CommandLineParams {
         addOption(HPC_SEQ_GENERATOR, "idgen", "Path to the sequence file for new capture's task");
     }
 
-    public String getHpcHost() {
+    public final String getHpcHost() {
         return getOptionValue(HPC_HOST);
     }
 
-    public int getHpcPort() {
+    public final int getHpcPort() {
         return getOptionIntValue(HPC_PORT);
     }
 
-    public String getLogFileName() {
+    public final String getLogFileName() {
         return getOptionValue(OUTPUT_LOG_FILE);
     }
 
-    public String getChangesDirName() {
+    public final String getChangesDirName() {
         return getOptionValue(CHANGES_DIR);
     }
-    
-    public String getHpcFileIdGen() {
+
+    public final String getHpcFileIdGen() {
     	return getOptionValue(HPC_SEQ_GENERATOR);
     }
     @Override
-    protected void initDefaults() {
+    protected final void initDefaults() {
     	super.initDefaults();
     	setDefaultValue(HPC_SEQ_GENERATOR.getName(), HPC_IDGEN_DEFAULT_FILENAME);
     	setDefaultServiceNameAndQueueName("capture");

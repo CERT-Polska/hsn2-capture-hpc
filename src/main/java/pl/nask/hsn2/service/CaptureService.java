@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
+ *
  * This file is part of HoneySpider Network 2.0.
- * 
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -38,7 +38,7 @@ public final class CaptureService extends ServiceMain {
 	// Keeps track of registered hpc tasks
 	private static volatile TaskRegistry taskRegistry;
 
-    public static void main(final String[] args) throws DaemonInitException, Exception {
+    public static void main(final String[] args) throws DaemonInitException {
     	CaptureService cs = new CaptureService();
     	cs.init(new DefaultDaemonContext(args));
     	cs.start();
@@ -61,7 +61,7 @@ public final class CaptureService extends ServiceMain {
     		logAnalyser = new HpcLogAnalyserImpl(cmd.getLogFileName(), taskRegistry);
     	} catch (IllegalArgumentException e) {
     		LOGGER.error("Cannot open HPC server log file: {}\t - Shutting down",e.getMessage());
-    		throw new RuntimeException("Cannot open HPC server log file", e);
+    		throw new IllegalArgumentException("Cannot open HPC server log file", e);
     	}
     	analyserThread = new Thread(logAnalyser, "hpcLogAnalyser");
     	analyserThread.start();
@@ -76,7 +76,7 @@ public final class CaptureService extends ServiceMain {
     	CaptureTaskFactory.prepereForAllThreads(hpcConnector, taskRegistry, cmd.getChangesDirName());
 		return CaptureTaskFactory.class;
 	}
-	
+
 	@Override
 	protected CommandLineParams newCommandLineParams() {
 		return new HpcCommandLineParams();

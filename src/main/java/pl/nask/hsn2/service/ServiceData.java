@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
+ *
  * This file is part of HoneySpider Network 2.0.
- * 
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -27,16 +27,16 @@ public class ServiceData {
     private String inputUrlOriginal;
 
     public ServiceData(ObjectDataWrapper data) {
-        this.id = data.getId();
-        this.inputUrlNormalized = data.getString("url_normalized");
-        this.inputUrlOriginal = data.getString("url_original");
+        id = data.getId();
+        inputUrlNormalized = data.getString("url_normalized");
+        inputUrlOriginal = data.getString("url_original");
     }
 
-    public String getUrlForProcessing() {
+    public final String getUrlForProcessing() {
         return inputUrlOriginal != null ? inputUrlOriginal : inputUrlNormalized;
     }
 
-    public long getId() {
+    public final long getId() {
         return id;
     }
 }

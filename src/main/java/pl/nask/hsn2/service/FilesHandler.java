@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
+ *
  * This file is part of HoneySpider Network 2.0.
- * 
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -33,10 +33,12 @@ import org.slf4j.LoggerFactory;
 import pl.nask.hsn2.ResourceException;
 
 public class FilesHandler {
-    private final static Logger LOGGER = LoggerFactory.getLogger(FilesHandler.class);
-    private final static Logger RACE_LOGGER = LoggerFactory.getLogger(FilesHandler.class.getName() + ".Race");
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilesHandler.class);
+    private static final Logger RACE_LOGGER = LoggerFactory.getLogger(FilesHandler.class.getName() + ".Race");
 
-    private final static Comparator<File> fileComparator = new DefaultFileComparator();
+    private static final Comparator<File> FILE_COMPARATOR = new DefaultFileComparator();
+
+    private static final int INITIAL_TIMEOUT = 100;
 
     private File changesDir;
 
@@ -50,11 +52,11 @@ public class FilesHandler {
         this.changesDir = new File(changesDir);
     }
 
-    File[] getLogFiles() throws ResourceException {
+    final File[] getLogFiles() throws ResourceException {
         return getTaskFilesWithSuffix("log");
     }
 
-    File[] getZipFiles() throws ResourceException {
+    final File[] getZipFiles() throws ResourceException {
         try {
             return getTaskFilesWithSuffix("zip", zipTries);
         } catch (InterruptedException e) {
@@ -63,7 +65,7 @@ public class FilesHandler {
     }
 
     private File[] getTaskFilesWithSuffix(String suffix, int numberOfTries) throws InterruptedException {
-        long currentTimeoutMilis = 100;
+        long currentTimeoutMilis = INITIAL_TIMEOUT;
         for (int i = 1; i <= numberOfTries; i++) {
             File[] result = getTaskFilesWithSuffix(suffix);
             if (result.length != 0) {
@@ -88,29 +90,30 @@ public class FilesHandler {
         File [] files = changesDir.listFiles(filter);
         LOGGER.debug("Files matching wildcard for prefix={}, suffix={}: {}", new Object[] {prefix, suffix, files});
         // expect one or 2 files to be found
-        Arrays.sort(files, fileComparator);
+        Arrays.sort(files, FILE_COMPARATOR);
         return files;
     }
 
-    File getPcapFile() throws ResourceException {
+    final File getPcapFile() throws ResourceException {
         LOGGER.warn("Saving PCAP files is not implemented");
         return null;
     }
 
-    File getScreenshotFile() throws ResourceException {
+    final File getScreenshotFile() throws ResourceException {
         LOGGER.warn("Saving screenshot files in not implemented");
         return null;
     }
-    
-    public String toString() {
+
+    @Override
+	public final String toString() {
     	try {
 			return "FilesHandler: "+changesDir.getCanonicalPath()+" "+prefix+"*";
 		} catch (IOException e) {
 			return "";
 		}
-    	
+
     }
-    public void setPrefix(String prefix) {
+    public final void setPrefix(String prefix) {
     	this.prefix = prefix;
     }
 }
