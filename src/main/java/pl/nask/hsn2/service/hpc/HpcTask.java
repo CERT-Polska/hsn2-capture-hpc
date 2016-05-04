@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
- * This file is part of HoneySpider Network 2.0.
- * 
+ *
+ * This file is part of HoneySpider Network 2.1.
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -49,43 +49,43 @@ public class HpcTask {
 
     HpcTask(long dataId, TaskRegistry taskRegistry) {
         this.taskRegistry = taskRegistry;
-        this.id = dataId;
-        this.countDownLatch = new CountDownLatch(1);
+        id = dataId;
+        countDownLatch = new CountDownLatch(1);
     }
 
-    public boolean isClassificationMalicious() {
+    public final boolean isClassificationMalicious() {
         return "MALICIOUS".equalsIgnoreCase(classification);
     }
 
-    public String getClassification() {
+    public final String getClassification() {
         return classification;
     }
 
-    public String getFailureReason() {
+    public final String getFailureReason() {
         return failureReason;
     }
 
-    public void waitForFinish() throws InterruptedException {
+    public final void waitForFinish() throws InterruptedException {
         countDownLatch.await();
     }
 
-    public String getLastStatus() {
+    public final String getLastStatus() {
         return lastStatus;
     }
 
-    public boolean isUnregistered() {
+    public final boolean isUnregistered() {
         return unregistered;
     }
 
-    public long getId() {
+    public final long getId() {
         return id;
     }
 
-    public boolean isProcessed() {
+    public final boolean isProcessed() {
         return processed;
     }
 
-    void update(String flag, String status) {
+    final void update(String flag, String status) {
         /*
         SENDING
         VISITING
@@ -137,7 +137,9 @@ public class HpcTask {
         lastStatus = status;
         allStatuses .add(status);
     }
-    public String toString() {
-    	return "[HpcTask ID="+this.id+this.allStatuses.toString()+"]";
+
+    @Override
+	public final String toString() {
+    	return "[HpcTask ID="+id+allStatuses.toString()+"]";
     }
 }

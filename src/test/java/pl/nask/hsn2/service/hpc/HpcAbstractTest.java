@@ -1,7 +1,7 @@
 /*
  * Copyright (c) NASK, NCSC
  * 
- * This file is part of HoneySpider Network 2.0.
+ * This file is part of HoneySpider Network 2.1.
  * 
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,8 @@ public abstract class HpcAbstractTest {
 
 
 	private void createFactory() {
-        factory = new CaptureTaskFactory(hpcConnector, taskRegistry, "changes");
+		CaptureTaskFactory.prepereForAllThreads(hpcConnector, taskRegistry, "changes");
+        factory = new CaptureTaskFactory();
     }
 
 

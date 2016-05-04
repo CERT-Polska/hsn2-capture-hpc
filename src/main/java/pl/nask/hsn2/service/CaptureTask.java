@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
- * This file is part of HoneySpider Network 2.0.
- * 
+ *
+ * This file is part of HoneySpider Network 2.1.
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ import pl.nask.hsn2.task.Task;
 import pl.nask.hsn2.utils.IdGeneratorException;
 
 public class CaptureTask implements Task {
-    private final static Logger LOGGER = LoggerFactory.getLogger(CaptureTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CaptureTask.class);
     private final TaskContext ctx;
     private final ServiceParameters params;
     private final ServiceData inputData;
@@ -63,14 +64,14 @@ public class CaptureTask implements Task {
     }
 
     @Override
-    public boolean takesMuchTime() {
+    public final boolean takesMuchTime() {
         return true;
     }
 
     @Override
-    public void process() throws ParameterException, ResourceException, StorageException {
+    public final void process() throws ParameterException, ResourceException, StorageException {
         try {
-            ctx.addTimeAttribute("hpc_time_start", System.currentTimeMillis()/1000l);
+            ctx.addTimeAttribute("hpc_time_start", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
             try {
 				hpcTask = taskRegistry.registerTask(ctx, inputData);
 			} catch (IdGeneratorException e) {
@@ -124,9 +125,9 @@ public class CaptureTask implements Task {
         	ctx.addAttribute("hpc_crash_report", e.toString());
         	LOGGER.error(e.getMessage(), e);
         } catch (InterruptedException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
-        	ctx.addTimeAttribute("hpc_time_stop", System.currentTimeMillis()/1000l);
+        	ctx.addTimeAttribute("hpc_time_stop", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
         }
     }
 
@@ -155,7 +156,7 @@ public class CaptureTask implements Task {
         }
     }
 
-    public HpcTask getHpcTask() {
+    public final HpcTask getHpcTask() {
         return hpcTask;
     }
 }

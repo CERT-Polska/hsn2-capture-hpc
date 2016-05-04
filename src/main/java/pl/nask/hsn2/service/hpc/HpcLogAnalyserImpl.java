@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
- * This file is part of HoneySpider Network 2.0.
- * 
+ *
+ * This file is part of HoneySpider Network 2.1.
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -46,7 +46,7 @@ public class HpcLogAnalyserImpl implements HpcLogAnalyser, Runnable {
     }
 
     @Override
-    public void run() {
+    public final void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 String line = reader.readLine();
@@ -77,9 +77,9 @@ public class HpcLogAnalyserImpl implements HpcLogAnalyser, Runnable {
     }
 
     private void processLine(String line, int lineNo) {
-    	final int field_count = 7 ;
-        String[] lnArr = line.split(" ",field_count);
-        if (lnArr.length < field_count) {
+    	final int fieldCount = 7 ;
+        String[] lnArr = line.split(" ",fieldCount);
+        if (lnArr.length < fieldCount) {
             LOGGER.warn("Unparseable line[{}]: {},",lineNo, line);
         } else {
             LOGGER.info("Parsing [{}]: {}",lineNo, line);

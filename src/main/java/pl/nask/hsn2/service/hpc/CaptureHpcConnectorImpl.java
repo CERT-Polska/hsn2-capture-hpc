@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
- * This file is part of HoneySpider Network 2.0.
- * 
+ *
+ * This file is part of HoneySpider Network 2.1.
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -22,13 +22,12 @@ package pl.nask.hsn2.service.hpc;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * Simple implementation of HPC connector. Will use a new connection for each command.
- * 
+ *
  * This class is thread safe.
- * 
+ *
  *
  */
 public class CaptureHpcConnectorImpl implements CaptureHpcConnector {
@@ -42,7 +41,7 @@ public class CaptureHpcConnectorImpl implements CaptureHpcConnector {
     }
 
     @Override
-    public void exit() throws IOException {
+    public final void exit() throws IOException {
         send("exit");
     }
 
@@ -63,17 +62,17 @@ public class CaptureHpcConnectorImpl implements CaptureHpcConnector {
     	}
     }
 
-    private Socket createSocket() throws UnknownHostException, IOException {
-        Socket socket = new Socket(host, port);
-        return socket;
+    private Socket createSocket() throws IOException {
+        return new Socket(host, port);
     }
 
     @Override
-    public void reload() throws IOException {
+    public final void reload() throws IOException {
     	send("reload");
     }
-     @Override
-    public void addUrl(String url, long urlId) throws IOException {
+
+    @Override
+    public final void addUrl(String url, long urlId) throws IOException {
         if (url == null || url.trim().length() == 0) {
             throw new IllegalArgumentException("URL parameter cannot be empty");
         }
@@ -81,7 +80,7 @@ public class CaptureHpcConnectorImpl implements CaptureHpcConnector {
     }
 
     @Override
-    public String getConnectorInfo() {
+    public final String getConnectorInfo() {
         return String.format("HpcConnector (host=%s, port=%s)", host, port);
     }
 

@@ -1,8 +1,8 @@
 /*
  * Copyright (c) NASK, NCSC
- * 
- * This file is part of HoneySpider Network 2.0.
- * 
+ *
+ * This file is part of HoneySpider Network 2.1.
+ *
  * This is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -42,13 +42,13 @@ public class TaskRegistry {
     	idGen = new FileIdGenerator();
     	((FileIdGenerator) idGen).setSequenceFile(idGenFilePath);
     }
-    
+
     TaskRegistry() {
     	idGen = new FileIdGenerator();
     	((FileIdGenerator)idGen).setSequenceFile(HpcCommandLineParams.HPC_IDGEN_DEFAULT_FILENAME);
     }
 
-    synchronized public void log(String id, String url, String flag, String status) {
+    public final synchronized void log(String id, String url, String flag, String status) {
     	long tId = -1l;
     	try {
     		tId = Long.valueOf(id);
@@ -65,7 +65,7 @@ public class TaskRegistry {
         }
     }
 
-    synchronized public HpcTask registerTask(TaskContext ctx, ServiceData data) throws IdGeneratorException {
+    public final synchronized HpcTask registerTask(TaskContext ctx, ServiceData data) throws IdGeneratorException {
     	LOGGER.debug("Registering async TaskContext (reqID={},{})", ctx!=null ? ctx.getReqId() : "",data!=null ? data.getUrlForProcessing(): "");
     	long tmpTaskId = idGen.nextId();
 
@@ -80,10 +80,11 @@ public class TaskRegistry {
         return taskMap.get(long1);
     }
 
-    synchronized public void unregister(HpcTask hpcTask) {
+    public final synchronized void unregister(HpcTask hpcTask) {
     LOGGER.debug("Unregistering HpcTask: {}", hpcTask.getId());
         taskMap.remove(hpcTask.getId());
     }
+
     private String getTasksIdsAsString () {
     	TreeSet<Long> ts = new TreeSet<Long>(taskMap.keySet());
     	return "["+ts.size()+"]"+ts.toString();
